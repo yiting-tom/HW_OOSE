@@ -47,7 +47,9 @@ services
 <br>
 <br>
 
-```plantuml
+![](out/OOPSE-Homework-4/uml.png)
+
+<!-- ```plantuml
 @startuml
 Title "UML Graph"
 skinparam defaultFontSize 20
@@ -229,7 +231,7 @@ WorkService ..> Employee
 WorkService ..> Manager
 WorkService ..> Office
 @enduml
-```
+``` -->
 
 ---
 
