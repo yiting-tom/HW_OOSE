@@ -64,8 +64,8 @@ public class CLIParser {
      */
     public void map()
     {
-        for(String arg: args) {
-            if(arg.startsWith("-")) {
+        for (String arg: args) {
+            if (arg.startsWith("-")) {
                 if (args.indexOf(arg) == (args.size() - 1)) {
                     flags.add(arg.replace("-", ""));
 
@@ -76,8 +76,7 @@ public class CLIParser {
                     //List of values (can be multiple)
                     List<String> argumentValues = new ArrayList<>();
                     int i = 1;
-                    while(args.indexOf(arg)+i != args.size() && !args.get(args.indexOf(arg)+i).startsWith("-"))
-                    {
+                    while (args.indexOf(arg)+i != args.size() && !args.get(args.indexOf(arg)+i).startsWith("-")) {
                         argumentValues.add(args.get(args.indexOf(arg)+i));
                         i++;
                     }

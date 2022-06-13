@@ -1,40 +1,122 @@
 package server;
 
 import java.io.*;
-import java.text.*;
-import java.util.*;
 import java.net.*;
+import java.util.logging.Logger;
 
+import data.MockDB;
+import utils.LogFormatter;
+
+/**
+ * The server class.
+ */
 public class Server {
-	public static void main(String[] args) throws IOException {
-		ServerSocket ss = new ServerSocket(9090);
+	// The logger for this class.
+	private final static Logger log = LogFormatter.getFileHandlerLogger(Server.class.getName());
 
-		// getting client request
-		// running infinite loop 
-		while (true) {
-			Socket ns = null;
-			
+	// The server running state.
+	private static boolean isRunning = true;
+
+	// The server socket
+	private static ServerSocket socket;
+
+	// The port number of the server.
+	private int port = 9090;
+
+	// The database.
+	private MockDB db = new MockDB();
+
+
+	/**
+	 * The constructor of Server.
+	 * 
+	 * @throws IOException if the server socket can not be created.
+	 */
+	public Server() throws IOException {
+		try {
+			socket = new ServerSocket(port);
+			log.info("Server is running on port " + port);
+		} catch (IOException e) {
+			log.severe("Server can't be started on port " + port);
+			throw e;
+		}
+	}
+
+	/**
+	 * Start the server.
+	 * 
+	 * @throws IOException if the server socket can not be created.
+	 */
+	public void serving() throws IOException {
+		while (isRunning) {
 			try {
-				// mynewSocket object to receive incoming client requests
-				ns = ss.accept();
-				
-				System.out.println("A new connection identified : " + ns);
+				Socket clientSocket = null;
+				// getting client request.
+				clientSocket = socket.accept();
+				log.info("Client " + clientSocket + " connected");
 
-				// obtaining input and out streams
-				DataInputStream in = new DataInputStream(ns.getInputStream());
-				DataOutputStream out = new DataOutputStream(ns.getOutputStream());
-				
-				System.out.println("Thread assigned");
+				// obtaining input and out streams from client socket.
+				DataInputStream in = new DataInputStream(clientSocket.getInputStream());
+				DataOutputStream out = new DataOutputStream(clientSocket.getOutputStream());
 
-				Thread myThread = new ClientHandler(ns, in, out);
-
-				// starting
-				myThread.start();
-				
+				// starting new thread for client.
+				Thread clientHandler = new ClientHandler(clientSocket, in, out, db);
+				clientHandler.start();
 			} catch (Exception e) {
-				ns.close();
-				e.printStackTrace();
+				log.severe("Server can't be started on port " + port);
+				throw new IOException(e);
 			}
 		}
 	}
+
+	/**
+	 * The main method.
+	 * 
+	 * @param args
+	 * @throws IOException
+	 */
+	public static void main(String[] args) throws IOException {
+		Server s = new Server();
+		s.serving();
+		s.close();
+	}
+
+	/**
+	 * Close the server.
+	 */
+	private void close() {
+		try {
+			setRunning(false);
+			socket.close();
+			log.fine("Server resources are closed");
+		} catch (IOException e) {
+			e.printStackTrace();
+			log.severe("Server can't be closed");
+		}
+	}
+
+	public int getPort() {
+		return port;
+	}
+
+	public void setPort(int port) {
+		this.port = port;
+	}
+
+	public static ServerSocket getSocket() {
+		return socket;
+	}
+
+	public static void setSocket(ServerSocket socket) {
+		Server.socket = socket;
+	}
+
+	public static boolean isRunning() {
+		return isRunning;
+	}
+
+	public static void setRunning(boolean isRunning) {
+		Server.isRunning = isRunning;
+	}
+
 }
