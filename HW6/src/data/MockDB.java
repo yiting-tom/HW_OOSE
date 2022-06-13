@@ -3,6 +3,7 @@ package data;
 import java.util.ArrayList;
 
 import models.course.Course;
+import models.exceptions.CourseException;
 import models.users.Admin;
 import models.users.Student;
 import models.users.User;
@@ -30,6 +31,7 @@ public class MockDB {
                 // Add some classes.
                 add(new Course("Object-Oriented Software Engineering", " 1102_P752000", 20));
                 add(new Course("Algorithms", " 1102_F721300", 69));
+                add(new Course("Linear Algebra", " 1102_F720100", 1));
             } catch (IllegalAccessException e) {
                 e.printStackTrace();
             }
@@ -40,12 +42,18 @@ public class MockDB {
         Student alice = (Student) users.get(0);
         Course oose = courses.get(0);
         Course algo = courses.get(1);
+        Course la = courses.get(2);
 
         // Set algorithms as pre-requests of oose.
         oose.setPreRequests(new ArrayList<>(){{add(algo);}});
 
         // Set Alice passed algorithms.
         StudentService.passCourse(alice, algo);
+
+        // Set Alice taken linear algebra.
+        try {
+            StudentService.takeCourse(alice, la);
+        } catch (CourseException e) {}
     }
 
     public User getUserByUsername(String username) {

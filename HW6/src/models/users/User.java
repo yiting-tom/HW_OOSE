@@ -3,7 +3,7 @@ package models.users;
 import java.security.spec.InvalidKeySpecException;
 
 import models.roles.RoleBase;
-import utils.securities.Hash;
+import utils.Hash;
 
 /**
  * The User class.

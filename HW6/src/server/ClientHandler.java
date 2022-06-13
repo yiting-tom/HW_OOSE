@@ -185,7 +185,10 @@ class ClientHandler extends Thread {
 	private void doRegisterOperation(Student student, Course course) throws IOException, NullPointerException {
 		if (!isRunning) return;
 
-		silentResponseMsg("Registering course " + course.getName() + " for student " + student.getName());
+		silentResponseMsg(
+			"Trying Register course " + course.getName() +
+			" for student " + student.getName()
+		);
 
 		try {
 			if (user instanceof Admin) {
@@ -193,7 +196,14 @@ class ClientHandler extends Thread {
 			} else if (user instanceof Student) {
 				StudentService.takeCourse(student, course);
 			}
-			silentResponseMsg("You have successfully registered\n" + course.getInfoString());
+			silentResponseMsg(
+				"You have successfully registered\n" +
+				"---------------------------\n" + 
+				student.getInfoString() + "\n" +
+				"---------------------------\n" + 
+				course.getInfoString() + "\n" +
+				"---------------------------\n"
+			);
 
 		} catch (CourseException ce) {
 			silentResponseMsg(ce.getMessage());
