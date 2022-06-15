@@ -143,8 +143,8 @@ S -->> C: <Disconnect>
 The client package provides the client node's operations.
 
 ### client.Client class
-The client package provides an entry to server,
-and using console as user interaction interface.
+The client package provides an entry to the server
+and uses the console as a user interaction interface.
 ```java
 package client;
 
@@ -531,7 +531,7 @@ public class Server {
 
 ### server.ClientHandler class
 The client handler class provides the services for the client to communicate with the server.
-It extends the thread class, and implements the run() method.
+It extends the thread class and implements the run() method.
 ```java
 package server;
 
@@ -1806,7 +1806,11 @@ public class Student extends User implements StudentRole {
 ---
 
 ## services package
-This package provides all relationship operations for models.
+This package provides all related operations for models.
+All service classes' methods must be implemented by
+`public synchronized static` decorators.
+Here the `synchronized` is provided from Java,
+and it's used to ensure only one thread could access at the same time in a multi-threading situation.
 
 ### services.AdminService class
 This class provides all operations to admins and courses.
@@ -1831,7 +1835,7 @@ public class AdminService {
      * @throws CourseException If the course is full.
      * @throws CourseException If the student has already registered.
      */
-    public static void takeCourse(Student student, Course course) throws CourseException {
+    public synchronized static void takeCourse(Student student, Course course) throws CourseException {
         if (course.getMaxStudents() <= course.getStudents().size()) {
             throw new IsFullException(
                 "The course have been fully taken:\n" +
@@ -1889,7 +1893,7 @@ public class StudentService {
      * @throws CourseException If the student has already registered.
      * @throws CourseException If the student has not passed the pre-requests.
      */
-    public static void takeCourse(Student student, Course course) throws CourseException {
+    public synchronized static void takeCourse(Student student, Course course) throws CourseException {
         if (course.getMaxStudents() <= course.getStudents().size()) {
             throw new IsFullException(
                 "The course have been fully taken:\n" +
@@ -1935,7 +1939,7 @@ public class StudentService {
      * @param course The course.
      * @return True if the student has passed the pre-requests.
      */
-    public static boolean checkPreRequests(Student student, Course course) {
+    public synchronized static boolean checkPreRequests(Student student, Course course) {
         for (Course preRequest : course.getPreRequests()) {
             if (!student.getPassed().contains(preRequest)) {
                 return false;
@@ -1950,7 +1954,7 @@ public class StudentService {
      * @param student The student.
      * @param course The course.
      */
-    public static void passCourse(Student student, Course course) {
+    public synchronized static void passCourse(Student student, Course course) {
         // We don't need to check if the student has taken the course.
         // We check at {@code StudentService.takeCourse} already.
         student.getPassed().add(course);

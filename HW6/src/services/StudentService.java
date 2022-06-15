@@ -20,7 +20,7 @@ public class StudentService {
      * @throws CourseException If the student has already registered.
      * @throws CourseException If the student has not passed the pre-requests.
      */
-    public static void takeCourse(Student student, Course course) throws CourseException {
+    public synchronized static void takeCourse(Student student, Course course) throws CourseException {
         if (course.getMaxStudents() <= course.getStudents().size()) {
             throw new IsFullException(
                 "The course have been fully taken:\n" +
@@ -81,7 +81,7 @@ public class StudentService {
      * @param student The student.
      * @param course The course.
      */
-    public static void passCourse(Student student, Course course) {
+    public synchronized static void passCourse(Student student, Course course) {
         // We don't need to check if the student has taken the course.
         // We check at {@code StudentService.takeCourse} already.
         student.getPassed().add(course);

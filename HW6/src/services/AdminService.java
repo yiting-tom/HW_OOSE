@@ -18,7 +18,7 @@ public class AdminService {
      * @throws CourseException If the course is full.
      * @throws CourseException If the student has already registered.
      */
-    public static void takeCourse(Student student, Course course) throws CourseException {
+    public synchronized static void takeCourse(Student student, Course course) throws CourseException {
         if (course.getMaxStudents() <= course.getStudents().size()) {
             throw new IsFullException(
                 "The course have been fully taken:\n" +
